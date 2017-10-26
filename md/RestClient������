@@ -1,0 +1,12 @@
+# RestClient工具类
+
+基于spring的RestTemplate类的调用，由于不想使用apache的httpClient去调用接口，封装了一个工具，然而公司内部并不推荐程序员写自己的工具类，并强行推HttpClient去请求，并且返回都是string，没有任何封装，因本人有强迫症，封装了一个。
+
+
+使用方法见：JFRestClientTest.java类
+
+
+
+
+github地址：
+
