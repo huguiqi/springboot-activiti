@@ -24,6 +24,8 @@ http://blog.csdn.net/xnf1991/article/details/52610277
 
 
 
+[Activiti请假例子](http://www.mossle.com/docs/activiti/index.html#configuration)
+
 我配置了一个mysql5.7.20，跑一个actiti引擎会初始化28张表。
 
 分别是：
