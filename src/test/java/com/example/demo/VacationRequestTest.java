@@ -15,7 +15,7 @@ import java.util.Map;
  * Created by guiqi on 2017/10/27.
  */
 
-public class OnboardingRequestTest {
+public class VacationRequestTest {
 
     @Before
     public void init(){
