@@ -17,15 +17,15 @@ import java.util.Map;
  */
 
 @Ignore
-public class VacationRequestTest {
+public class VacationTest {
 
     @Before
     public void init(){
         ProcessEngineConfiguration cfg = new StandaloneProcessEngineConfiguration()
-                .setJdbcUrl("jdbc:mysql://localhost:3306/activiti?useUnicode=true&characterEncoding=utf-8")
-                .setJdbcUsername("root")
-                .setJdbcPassword("123456")
-                .setJdbcDriver("com.mysql.jdbc.Driver")
+                .setJdbcUrl("jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000")
+                .setJdbcUsername("sa")
+                .setJdbcPassword("")
+                .setJdbcDriver("org.h2.Driver")
                 .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
         ProcessEngine processEngine = cfg.buildProcessEngine();
         String pName = processEngine.getName();
@@ -39,7 +39,7 @@ public class VacationRequestTest {
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         RepositoryService repositoryService = processEngine.getRepositoryService();
         repositoryService.createDeployment()
-                .addClasspathResource("processes/VacationRequest.bpmn20.xml")
+                .addClasspathResource("processes/VacationTest.bpmn")
                 .deploy();
 
         System.out.println("Number of process definitions: " + repositoryService.createProcessDefinitionQuery().count());
@@ -47,16 +47,20 @@ public class VacationRequestTest {
 
     @Test
     public void testRequestVocation(){
+
+        testDeployProcessEngine();
+
         Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("employeeName", "狗蛋");
+        variables.put("userName", "狗蛋");
         variables.put("numberOfDays", new Integer(3));
         variables.put("vacationMotivation", "老子累了，老子要休息几天");
 
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         RuntimeService runtimeService = processEngine.getRuntimeService();
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("vacationRequest", variables);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("VocationProcess", variables);
 // Verify that we started a new process instance
         System.out.println("Number of process instances: " + runtimeService.createProcessInstanceQuery().count());
+        System.out.println("currentInstance:"+processInstance.getName());
     }
 
 

@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.example</groupId>
-	<artifactId>activiti-demo</artifactId>
+	<artifactId>activiti-demo2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>springboot-activiti</name>
+	<name>springboot-activiti6</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -22,6 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<activiti.version>6.0.0</activiti.version>
 	</properties>
 
 	<dependencies>
@@ -42,15 +43,14 @@
 
 		<dependency>
 			<groupId>org.activiti</groupId>
-			<artifactId>activiti-spring-boot</artifactId>
-			<version>6.0.0</version>
-			<type>pom</type>
+			<artifactId>activiti-spring-boot-starter-basic</artifactId>
+			<version>${activiti.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.activiti</groupId>
-			<artifactId>activiti-engine</artifactId>
-			<version>6.0.0</version>
+			<artifactId>spring-boot-starter-rest-api</artifactId>
+			<version>${activiti.version}}</version>
 		</dependency>
 
 		<dependency>

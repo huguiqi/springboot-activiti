@@ -114,3 +114,15 @@ act_evt_log
     java\com\example\demo\VacationRequestTest.java
     
    
+
+# activiti5.x VS activiti6.x
+
+想要快速入门，activiti5.x的explorer.war部署后可以看到数据库中的流程与变化
+
+
+# springboot集成
+
+[spring官方文档](https://spring.io/blog/2015/03/08/getting-started-with-activiti-and-spring-boot)
+
+[activiti官方文档](https://www.activiti.org/userguide/#springSpringBoot)
+   

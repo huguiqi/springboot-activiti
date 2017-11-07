@@ -5,20 +5,20 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:activiti="http://activiti.org/bpmn">
 
-    <process id="vacationRequest" name="Vacation request">
+    <process id="vacationRequest" name="请假流程">
 
         <startEvent id="request" activiti:initiator="employeeName">
             <extensionElements>
                 <activiti:formProperty id="numberOfDays" name="Number of days" type="long" value="1" required="true"/>
                 <activiti:formProperty id="startDate" name="First day of holiday (dd-MM-yyy)" datePattern="dd-MM-yyyy hh:mm" type="date" required="true" />
-                <activiti:formProperty id="vacationMotivation" name="Motivation" type="string" />
+                <activiti:formProperty id="vacationMotivation" name="理由" type="string" />
             </extensionElements>
         </startEvent>
         <sequenceFlow id="flow1" sourceRef="request" targetRef="handleRequest" />
 
         <userTask id="handleRequest" name="Handle vacation request" >
             <documentation>
-                ${employeeName} would like to take ${numberOfDays} day(s) of vacation (Motivation: ${vacationMotivation}).
+                ${employeeName} 想要请 ${numberOfDays} 天假 (理由: ${vacationMotivation}).
             </documentation>
             <extensionElements>
                 <activiti:formProperty id="vacationApproved" name="Do you approve this vacation" type="enum" required="true">

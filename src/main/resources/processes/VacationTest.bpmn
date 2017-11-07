@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1510036698481" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <process id="VocationProcess" isClosed="false" isExecutable="true" name="请假流程" processType="None">
+    <startEvent id="requestStart" name="开始"/>
+    <userTask activiti:assignee="${loginUser}" activiti:exclusive="true" id="task1" name="主管申批">
+      <documentation id="task1_D_1"><![CDATA[${userName} 想要请 ${numberOfDays}  天假。 (理由: ${vacationMotivation}).]]></documentation>
+      <extensionElements>
+        <activiti:formProperty id="requestApproved" name="请假是否被批准" required="true" type="eunm"/>
+        <activiti:formProperty id="headManMotivation" name="主管意见" type="string"/>
+        <activiti:formProperty id="requestApproved" name="申请是否被批准" required="true" type="enum"/>
+        <activiti:formProperty id="headManMotivation" name="主管意见"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="_5" name="提交" sourceRef="requestStart" targetRef="task1"/>
+    <manualTask activiti:exclusive="true" id="task4" name="发短信告之">
+      <documentation id="task4_D_1"><![CDATA[亲爱的]]></documentation>
+    </manualTask>
+    <userTask activiti:exclusive="true" id="task5" name="重新调整请假天数">
+      <documentation id="task5_D_1"><![CDATA[你主管无情拒绝了你申请的 ${numberOfDays} 天请假。                 原因: ${headManMotivation}]]></documentation>
+    </userTask>
+    <exclusiveGateway gatewayDirection="Unspecified" id="_8" name="是否批准">
+      <documentation id="_8_D_1"/>
+    </exclusiveGateway>
+    <sequenceFlow id="_9" sourceRef="task1" targetRef="_8"/>
+    <sequenceFlow id="_11" name="是" sourceRef="_8" targetRef="task4">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${requestApproved == 'YES'}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="_12" name="结束"/>
+    <parallelGateway gatewayDirection="Unspecified" id="_4" name="是否重新申请"/>
+    <sequenceFlow id="_6" name="否" sourceRef="_8" targetRef="_4">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${requestApproved == 'NO'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_13" sourceRef="task4" targetRef="_12"/>
+    <sequenceFlow id="_14" name="否" sourceRef="_4" targetRef="_12"/>
+    <sequenceFlow id="_15" name="是" sourceRef="_4" targetRef="task5"/>
+    <sequenceFlow id="_16" sourceRef="task5" targetRef="task1"/>
+  </process>
+  <bpmndi:BPMNDiagram documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="VocationProcess">
+      <bpmndi:BPMNShape bpmnElement="requestStart" id="Shape-requestStart">
+        <omgdc:Bounds height="32.0" width="32.0" x="50.0" y="65.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task1" id="Shape-task1">
+        <omgdc:Bounds height="55.0" width="85.0" x="35.0" y="185.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task4" id="Shape-task4">
+        <omgdc:Bounds height="55.0" width="85.0" x="300.0" y="90.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="task5" id="Shape-task5">
+        <omgdc:Bounds height="55.0" width="115.0" x="270.0" y="330.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="115.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_8" id="Shape-_8" isMarkerVisible="false">
+        <omgdc:Bounds height="32.0" width="32.0" x="190.0" y="185.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_12" id="Shape-_12">
+        <omgdc:Bounds height="32.0" width="32.0" x="485.0" y="185.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" id="Shape-_4">
+        <omgdc:Bounds height="32.0" width="32.0" x="295.0" y="240.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_13" id="BPMNEdge__13" sourceElement="task4" targetElement="_12">
+        <omgdi:waypoint x="400.0" y="117.5"/>
+        <omgdi:waypoint x="485.0" y="201.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_15" id="BPMNEdge__15" sourceElement="_4" targetElement="task5">
+        <omgdi:waypoint x="311.0" y="287.0"/>
+        <omgdi:waypoint x="311.0" y="330.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_14" id="BPMNEdge__14" sourceElement="_4" targetElement="_12">
+        <omgdi:waypoint x="342.0" y="256.0"/>
+        <omgdi:waypoint x="485.0" y="201.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_16" id="BPMNEdge__16" sourceElement="task5" targetElement="task1">
+        <omgdi:waypoint x="255.0" y="357.5"/>
+        <omgdi:waypoint x="120.0" y="212.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5" id="BPMNEdge__5" sourceElement="requestStart" targetElement="task1">
+        <omgdi:waypoint x="66.0" y="112.0"/>
+        <omgdi:waypoint x="66.0" y="185.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_6" id="BPMNEdge__6" sourceElement="_8" targetElement="_4">
+        <omgdi:waypoint x="237.0" y="201.0"/>
+        <omgdi:waypoint x="295.0" y="256.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_9" id="BPMNEdge__9" sourceElement="task1" targetElement="_8">
+        <omgdi:waypoint x="135.0" y="212.5"/>
+        <omgdi:waypoint x="190.0" y="201.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_11" id="BPMNEdge__11" sourceElement="_8" targetElement="task4">
+        <omgdi:waypoint x="237.0" y="201.0"/>
+        <omgdi:waypoint x="300.0" y="117.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
