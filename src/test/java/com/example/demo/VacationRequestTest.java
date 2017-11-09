@@ -54,7 +54,7 @@ public class VacationRequestTest {
 
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         RuntimeService runtimeService = processEngine.getRuntimeService();
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("vacationRequest", variables);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("vacationRequest.request", variables);
 // Verify that we started a new process instance
         System.out.println("Number of process instances: " + runtimeService.createProcessInstanceQuery().count());
     }

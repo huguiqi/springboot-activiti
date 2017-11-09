@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,8 @@ public class VacationTest {
         variables.put("userName", "狗蛋");
         variables.put("numberOfDays", new Integer(3));
         variables.put("vacationMotivation", "老子累了，老子要休息几天");
+        variables.put("startDate",new Date());
+        variables.put("endDate",new Date());
 
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -66,9 +69,13 @@ public class VacationTest {
 
     @Test
     public void testListTask(){
-        // Fetch all tasks for the management group
+        testRequestVocation();
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         TaskService taskService = processEngine.getTaskService();
+//        List<Task> tasks = taskService.createTaskQuery().list();
+        //condidateGroup和assignee是互斥的
+
+        // 查询出任务接受人组为management的任务列表
         List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("management").list();
         for (Task task : tasks) {
             System.out.println("Task Id: " + task.getId());
@@ -81,13 +88,15 @@ public class VacationTest {
 
     @Test
     public void testCompleteTask(){
-        // Fetch all tasks for the management group
+        testRequestVocation();
+
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         TaskService taskService = processEngine.getTaskService();
         List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("management").list();
         Map<String, Object> taskVariables = new HashMap<String, Object>();
-        taskVariables.put("vacationApproved", "false");
-        taskVariables.put("managerMotivation", "项目很紧，给老子加班!!");
+        taskVariables.put("requestApproved", "NO");
+        taskVariables.put("headManMotivation", "项目很紧，给老子加班!!");
+        taskVariables.put("resend","YES");
 
 
         for (Task task : tasks) {
@@ -95,5 +104,25 @@ public class VacationTest {
             System.out.println("Task available: " + task.getName());
             taskService.complete(task.getId(), taskVariables);
         }
+
+    }
+
+
+    @Test
+    public void testNextResendTask(){
+        testCompleteTask();
+        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+        TaskService taskService = processEngine.getTaskService();
+        List<Task> tasks = taskService.createTaskQuery().list();
+
+        for (Task task :tasks){
+                System.out.println("task name:"+task.getName());
+                taskService.complete(task.getId());
+        }
+        List<Task> tasks2= taskService.createTaskQuery().list();
+        for (Task task:tasks2){
+            System.out.println("task name:"+task.getName());
+        }
+
     }
 }
