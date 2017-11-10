@@ -436,4 +436,4 @@ Spring Boot是微服务快速开发框架，强调的是零配置，显然不推
 [activiti官方文档](https://www.activiti.org/userguide/#springSpringBoot)
    
    
-   
+[参考](http://www.cnblogs.com/haore147/p/5213643.html)   
