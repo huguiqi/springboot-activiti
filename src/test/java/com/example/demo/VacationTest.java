@@ -4,10 +4,13 @@ import org.activiti.engine.*;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +20,6 @@ import java.util.Map;
  * Created by guiqi on 2017/10/27.
  */
 
-@Ignore
 public class VacationTest {
 
     @Before
@@ -64,6 +66,8 @@ public class VacationTest {
 // Verify that we started a new process instance
         System.out.println("Number of process instances: " + runtimeService.createProcessInstanceQuery().count());
         System.out.println("currentInstance:"+processInstance.getName());
+
+
     }
 
 
@@ -125,4 +129,6 @@ public class VacationTest {
         }
 
     }
+
+
 }

@@ -4,10 +4,13 @@ import org.activiti.engine.*;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +25,7 @@ public class VacationRequestTest {
     @Before
     public void init(){
         ProcessEngineConfiguration cfg = new StandaloneProcessEngineConfiguration()
-                .setJdbcUrl("jdbc:mysql://localhost:3306/activiti?useUnicode=true&characterEncoding=utf-8")
+                .setJdbcUrl("jdbc:mysql://localhost:3306/activiti2?useUnicode=true&characterEncoding=utf-8")
                 .setJdbcUsername("root")
                 .setJdbcPassword("123456")
                 .setJdbcDriver("com.mysql.jdbc.Driver")
@@ -39,7 +42,7 @@ public class VacationRequestTest {
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         RepositoryService repositoryService = processEngine.getRepositoryService();
         repositoryService.createDeployment()
-                .addClasspathResource("processes/VacationRequest.bpmn20.xml")
+                .addClasspathResource("processes/VacationTest.bpmn")
                 .deploy();
 
         System.out.println("Number of process definitions: " + repositoryService.createProcessDefinitionQuery().count());
@@ -92,4 +95,15 @@ public class VacationRequestTest {
             taskService.complete(task.getId(), taskVariables);
         }
     }
+
+
+    @Test
+    public void getImageById()throws Exception{
+        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+        InputStream inputStream= processEngine.getRepositoryService()
+                .getResourceAsStream("27501", "processes/VacationTest.VocationProcess.png"); // 根据流程部署ID和资源名称获取输入流
+        FileUtils.copyInputStreamToFile(inputStream, new File("D:/helloWorld.png"));
+    }
+
+
 }

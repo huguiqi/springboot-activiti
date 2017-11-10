@@ -49,7 +49,6 @@
 
 		<dependency>
 			<groupId>org.activiti</groupId>
-			<!--<artifactId>spring-boot-starter-rest-api</artifactId>-->
 			<artifactId>activiti-spring-boot-starter-rest-api</artifactId>
 			<version>${activiti.version}</version>
 		</dependency>

@@ -109,6 +109,10 @@ act_procdef_info
 act_evt_log
 
 
+参考这张图：
+
+   ![图](http://img.blog.csdn.net/20140729133403448?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYTY3NDc0NTA2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+
 ## 以请假流程为例写一个demo
 
     java\com\example\demo\VacationRequestTest.java
@@ -122,7 +126,314 @@ act_evt_log
 
 # springboot集成
 
+
+新建一个project,springboot-activiti
+
+pom:
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+    
+        <groupId>com.example</groupId>
+        <artifactId>activiti-demo2</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <packaging>jar</packaging>
+    
+        <name>springboot-activiti6</name>
+        <description>Demo project for Spring Boot</description>
+    
+        <parent>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>1.5.6.RELEASE</version>
+            <relativePath/> <!-- lookup parent from repository -->
+        </parent>
+    
+        <properties>
+            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+            <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+            <java.version>1.8</java.version>
+            <activiti.version>6.0.0</activiti.version>
+        </properties>
+    
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-spring-boot-starter-basic</artifactId>
+                <version>${activiti.version}</version>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-spring-boot-starter-rest-api</artifactId>
+                <version>${activiti.version}</version>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-spring-boot-starter-actuator</artifactId>
+                <version>${activiti.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-spring-boot-starter-jpa</artifactId>
+                <version>${activiti.version}</version>
+            </dependency>
+    
+            
+            <!-- Use MySQL Connector-J -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.44</version>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <optional>true</optional>
+            </dependency>
+    
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.30</version>
+            </dependency>
+    
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.9.2</version>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <scope>test</scope>
+            </dependency>
+    
+    
+    
+        </dependencies>
+    
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </build>
+    
+    
+    </project>
+
+
+
+## 默认url访问鉴权
+
+其中，activiti-spring-boot-starter-rest-api 默认对RestController的url会进行basic authentication(权限验证),调用post方式的rest地址时需要输入用户名密码，
+
+而此用户名和密码需要在springboot的MyActivitiApp类中加上：
+
+    @Bean
+    InitializingBean usersAndGroupsInitializer(final IdentityService identityService) {
+
+        return new InitializingBean() {
+            public void afterPropertiesSet() throws Exception {
+
+                Group group = identityService.newGroup("user");
+                group.setName("users");
+                group.setType("security-role");
+                identityService.saveGroup(group);
+
+                User admin = identityService.newUser("admin");
+                admin.setPassword("admin");
+                identityService.saveUser(admin);
+
+            }
+        };
+    }
+
+
+
+其中，`identityService.newGroup("user");`
+是在 `act_id_group`表中插入了一条用户组为user的数据，类型是`security-role`
+
+    User admin = identityService.newUser("admin");
+    admin.setPassword("admin");
+    identityService.saveUser(admin);`
+                 
+ 是在 `act_id_user` 表中增加一条用户名和密码为admin的用户。
+ 
+
+用curl访问时:
+
+    curl -u admin:admin -H "Content-Type: application/json" -d '{"userName" : "sam"}' http://localhost:8080/process
+
+
+## 忽略url访问鉴权
+
+
+在springboot的启动类的注解上加上如下：
+
+    @SpringBootApplication(exclude = {
+            org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class,
+            org.activiti.spring.boot.SecurityAutoConfiguration.class,
+            org.springframework.boot.actuate.autoconfigure.ManagementWebSecurityAutoConfiguration.class
+    })
+    public class MyActivitiApp {
+        .....
+    }
+
+
+
+然后再访问时就不需要加用户和密码了，直接访问(post请求，不指定请求方式的情况下指全部)：
+
+    curl -H "Content-Type: application/json" -d '{"userName" : "sam"}' http://localhost:8080/process
+
+
+
+
+## 配置数据源
+
+application.properties:
+
+    spring.datasource.driverClassName = com.mysql.jdbc.Driver
+    spring.datasource.url = jdbc:mysql://localhost:3306/activiti2?useUnicode=true&characterEncoding=utf-8
+    spring.datasource.username = root
+    spring.datasource.password = 123456
+    
+    spring.jpa.hibernate.ddl-auto=update
+
+
+activiti遵循springboot的配置。
+
+
+
+## JPA接口
+repository需要继承父类JpaRepository，遵循接口泛形定义。
+
+以本例子repository为例：
+
+
+    public interface PersonRepository extends JpaRepository<Person, Long> {
+    
+        Person findByUsername(String username);
+    
+    }
+
+
+默认是用hibernate实现的持久层。
+
+但是公司项目都是mybatis，而activiti内部就是用ibatis实现的，那么应该对mybatis的支持更好。
+
+
+
+## mybatis集成
+
+
+
+
+
+## 查看审核流程表(png)
+
+一个流程发布后，activiti都会将bpmn文件和生成的png文件存在数据库中，就是`act_ge_bytearray` 这张表。
+
+
+取的时候就这样：
+
+
+@Test
+    public void getImageById()throws Exception{
+        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+        InputStream inputStream= processEngine.getRepositoryService()
+                .getResourceAsStream("27501", "processes/VacationTest.VocationProcess.png"); // 根据流程部署ID和资源名称获取输入流
+        FileUtils.copyInputStreamToFile(inputStream, new File("D:/helloWorld.png"));
+    }
+
+
+
+
+## 获取流程图中文乱码问题
+
+
+Spring Boot是微服务快速开发框架，强调的是零配置，显然不推荐采用XML配置文件的方式解决。不使用Spring Boot的时候，
+
+是通过下面这种方式就可以解决：
+
+* ①原始解决方式：在Spring配置文件中的
+
+
+    <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration"> 
+
+中加入两行代码：
+
+    <property name="activityFontName" value="宋体"/>
+
+    <property name="labelFontName" value="宋体"/>
+
+配置如下：
+
+    <bean id="processEngineConfiguration"
+    class="org.activiti.spring.SpringProcessEngineConfiguration">
+    <property name="activityFontName" value="宋体"/>
+    <property name="labelFontName" value="宋体"/>
+    <property name="dataSource" ref="dataSource" />
+    <property name="transactionManager" ref="transactionManager" />
+    <property name="databaseSchemaUpdate" value="true" />
+    <property name="mailServerHost" value="localhost" />
+    <property name="mailServerPort" value="5025" />
+    <property name="jpaHandleTransaction" value="true" />
+    <property name="jpaCloseEntityManager" value="true" />
+    <property name="jobExecutorActivate" value="false" />
+    </bean>
+
+
+* ②Spring Boot中我采用的解决办法是，生成流程图的时候设置字体和编码信息解决，如下
+
+        
+        @Test
+            public void genPic() throws Exception {
+                ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+                ProcessInstance pi = processEngine.getRuntimeService().createProcessInstanceQuery().deploymentId("27503").singleResult();
+                BpmnModel bpmnModel = processEngine.getRepositoryService().getBpmnModel(pi.getProcessDefinitionId());
+                List<String> activeIds = processEngine.getRuntimeService().getActiveActivityIds(pi.getId());
+                ProcessDiagramGenerator p = new DefaultProcessDiagramGenerator();
+                InputStream is = p.generateDiagram(bpmnModel, "png", activeIds, Collections.<String> emptyList(),"", "宋体", "宋体",null,
+                         1.0);
+        
+                File file = new File("D:/process.png");
+                OutputStream os = new FileOutputStream(file);
+        
+                byte[] buffer = new byte[1024];
+                int len = 0;
+                while ((len = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, len);
+                }
+        
+                os.close();
+                is.close();
+      }
+
+
+
+参考如下文章：
+
 [spring官方文档](https://spring.io/blog/2015/03/08/getting-started-with-activiti-and-spring-boot)
 
 [activiti官方文档](https://www.activiti.org/userguide/#springSpringBoot)
+   
+   
    
