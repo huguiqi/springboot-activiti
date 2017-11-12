@@ -14,9 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-//@Configuration
-//@ComponentScan
-//@EnableAutoConfiguration
 public class MyActivitiApp {
 
     public static void main(String[] args) {
@@ -56,24 +53,24 @@ public class MyActivitiApp {
     }
 
 
-//    @Bean
-//    InitializingBean usersAndGroupsInitializer(final IdentityService identityService) {
-//
-//        return new InitializingBean() {
-//            public void afterPropertiesSet() throws Exception {
-//
-//                Group group = identityService.newGroup("user");
-//                group.setName("users");
-//                group.setType("security-role");
-//                identityService.saveGroup(group);
-//
-//                User admin = identityService.newUser("admin");
-//                admin.setPassword("admin");
-//                identityService.saveUser(admin);
-//
-//            }
-//        };
-//    }
+    @Bean
+    InitializingBean usersAndGroupsInitializer(final IdentityService identityService) {
+
+        return new InitializingBean() {
+            public void afterPropertiesSet() throws Exception {
+
+                Group group = identityService.newGroup("user");
+                group.setName("users");
+                group.setType("security-role");
+                identityService.saveGroup(group);
+
+                User admin = identityService.newUser("admin");
+                admin.setPassword("admin");
+                identityService.saveUser(admin);
+
+            }
+        };
+    }
 
 }
 

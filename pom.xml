@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.example</groupId>
-	<artifactId>activiti-demo2</artifactId>
+	<artifactId>activiti-demo-mybatis</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>springboot-activiti6</name>
+	<name>springboot-activiti-mybatis</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -59,11 +59,7 @@
 			<artifactId>activiti-spring-boot-starter-actuator</artifactId>
 			<version>${activiti.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-spring-boot-starter-jpa</artifactId>
-			<version>${activiti.version}</version>
-		</dependency>
+
 
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -95,6 +91,19 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.9.2</version>
 		</dependency>
+
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -1,21 +1,19 @@
 package com.example.demo.bean;
 
 import lombok.Data;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by guiqi on 2017/11/9.
  */
-@Entity
+@Component
 @Data
-public class Person {
+public class Person implements Serializable{
 
-    @Id
-    @GeneratedValue
     private Long id;
 
     private String username;
