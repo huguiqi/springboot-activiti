@@ -43,6 +43,11 @@ public class MyService {
         return taskService.createTaskQuery().taskAssignee(assignee).list();
     }
 
+    public List<Task> getTasksByName(String name){
+
+        return taskService.createTaskQuery().taskName(name).list();
+    }
+
     public void createDemoUsers() {
         if (personRepository.findAll().size() == 0) {
             personRepository.save(new Person("sam", "hu", "G", new Date()));
@@ -50,4 +55,7 @@ public class MyService {
         }
     }
 
+    public void complete(String taskId) {
+        taskService.complete(taskId);
+    }
 }

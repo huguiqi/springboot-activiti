@@ -20,8 +20,8 @@ public interface PersonMapper {
     List<Person> findAll();
 
 
-    @Insert("INSERT INTO PERSON(USERNAME,FIRSTNAME,LASTNAME,BIRTHDATE) values(#{username},#{firstName},#{lastName},#{birthDate})")
-    @Options(useGeneratedKeys = true,keyProperty = "id", keyColumn = "ID")
+    @Insert("INSERT INTO PERSON(ID,USERNAME,FIRSTNAME,LASTNAME,BIRTHDATE) values(#{id},#{username},#{firstName},#{lastName},#{birthDate})")
+    @SelectKey(statement = "SELECT SEQ_PERSON.Nextval as ID from DUAL",resultType = Long.class,before = true,keyProperty = "id",keyColumn = "ID")
     void save(Person person);
 
 }

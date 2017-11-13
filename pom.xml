@@ -23,6 +23,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<activiti.version>6.0.0</activiti.version>
+		<!--<oracle.version>11.2.0.3</oracle.version>-->
+		<oracle.version>11.2.0.4.0-atlassian-hosted</oracle.version>
 	</properties>
 
 	<dependencies>
@@ -67,11 +69,11 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Use MySQL Connector-J -->
+		<!-- Use Oracle -->
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.44</version>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>${oracle.version}</version>
 		</dependency>
 
 		<dependency>

@@ -76,4 +76,24 @@ public class MyRestController {
 
     }
 
+
+    @RequestMapping(value="/getTasksByName", method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    public List<TaskRepresentation> getTasksByName(@RequestParam String name) {
+        List<Task> tasks = myService.getTasksByName(name);
+        List<TaskRepresentation> dtos = new ArrayList<TaskRepresentation>();
+        for (Task task : tasks) {
+            dtos.add(new TaskRepresentation(task.getId(), task.getName()));
+        }
+        return dtos;
+    }
+
+
+
+    @RequestMapping(value="/complete/{taskId}", method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    public void complete(@PathVariable("taskId") String taskId) {
+        myService.complete(taskId);
+    }
+
+
+
 }
