@@ -29,3 +29,38 @@
 目标：
 同时100个不同的人同时发起流程，流程是否会乱？
 
+
+
+
+
+## springboot-activiti多数据源配置
+
+新增配置
+
+    @Configuration
+    public class ActivitiDatasourceConfig extends AbstractProcessEngineAutoConfiguration {
+    
+        @Bean
+        @Primary
+        @ConfigurationProperties(prefix = "spring.datasource.activiti")
+        public DataSource activitiDataSource() {
+            return DataSourceBuilder.create().build();
+        }
+    
+        @Bean
+        public SpringProcessEngineConfiguration springProcessEngineConfiguration(
+                PlatformTransactionManager transactionManager,
+                SpringAsyncExecutor springAsyncExecutor) throws IOException {
+    
+            return baseSpringProcessEngineConfiguration(
+                    activitiDataSource(),
+                    transactionManager,
+                    springAsyncExecutor);
+        }
+    
+    }
+
+### primary注解
+
+表示该数据源为主要的默认数据源，其他数据源需要自己额外指定事务管理器。
+
