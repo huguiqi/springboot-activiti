@@ -603,7 +603,7 @@ mysql:
 3，查询流程状态
 4，操作流程
 5，集成mybatis
-6，集成oracle11g
+6，将mysql换成oracle11g
 
 7，并发测试，线程安全
 8，事务
