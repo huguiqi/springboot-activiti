@@ -64,3 +64,22 @@
 
 表示该数据源为主要的默认数据源，其他数据源需要自己额外指定事务管理器。
 
+
+
+
+## 关闭job
+
+JobExecutor是管理一系列线程的组件，可以触发定时器（也包含后续的异步消息）。 在单元测试场景下，很难使用多线程。因此API允许查询(ManagementService.createJobQuery)和执行job (ManagementService.executeJob)，所以job可以在单元测试中控制。 要避免与job执行器冲突，可以关闭它。
+
+默认，JobExecutor在流程引擎启动时就会激活。 如果不想在流程引擎启动后自动激活JobExecutor，可以设置：
+
+    spring.activiti.jobExecutorActivate=false
+
+
+## Spring Boot Actuator
+
+[actuator详情](http://www.jianshu.com/p/af9738634a21)
+
+找到一个activiti官方文档的中文翻译，感谢作者tkjohn：
+
+[activiti官方文档翻译](https://tkjohn.github.io/activiti-userguide/)
