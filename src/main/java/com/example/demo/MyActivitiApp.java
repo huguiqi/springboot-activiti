@@ -14,7 +14,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+        org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class,
+        org.activiti.spring.boot.SecurityAutoConfiguration.class,
+        org.springframework.boot.actuate.autoconfigure.ManagementWebSecurityAutoConfiguration.class
+})
 @EnableTransactionManagement
 public class MyActivitiApp {
 
@@ -43,16 +47,16 @@ public class MyActivitiApp {
 //    }
 
 
-    @Bean
-    public CommandLineRunner init(final MyService myService) {
-
-        return new CommandLineRunner() {
-            public void run(String... strings) throws Exception {
-                myService.createDemoUsers();
-            }
-        };
-
-    }
+//    @Bean
+//    public CommandLineRunner init(final MyService myService) {
+//
+//        return new CommandLineRunner() {
+//            public void run(String... strings) throws Exception {
+//                myService.createDemoUsers();
+//            }
+//        };
+//
+//    }
 
 
 //    @Bean

@@ -24,7 +24,6 @@ import java.util.Map;
  * Created by guiqi on 2017/11/14.
  */
 
-@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ZMXYProcessesTest {
@@ -64,7 +63,7 @@ public class ZMXYProcessesTest {
 
 
     @Test
-    public void testStartProcess(){
+    public void testStartZMXYProcess(){
             Person person = personRepository.findByUsername("sam");
             Map<String, Object> variables = new HashMap<String, Object>();
             variables.put("userId", person.getId());
@@ -100,6 +99,8 @@ public void testNotAuditTask(){
        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).processInstanceBusinessKey("1").singleResult();
         System.out.println("task:"+task.getName());
 }
+
+
 
 
 }

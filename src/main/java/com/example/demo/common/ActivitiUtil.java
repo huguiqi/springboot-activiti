@@ -17,8 +17,6 @@ import java.util.Map;
 @Component
 public class ActivitiUtil {
 
-    @Autowired
-    private ProcessEngine processEngine;
 
     @Autowired
     private TaskService taskService;

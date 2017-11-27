@@ -3,25 +3,22 @@ package com.example.demo;
 import com.example.demo.bean.Person;
 import com.example.demo.repository.PersonRepository;
 import org.activiti.engine.*;
-import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.test.ActivitiRule;
-import org.activiti.engine.test.Deployment;
-import org.junit.Before;
-import org.junit.Rule;
+import org.activiti.engine.task.Task;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,11 +27,9 @@ import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class OneTaskTransationTest{
+public class OneTaskConcurrentTest {
 
 
-    @Autowired
-    ApplicationContext applicationContext;
 
 
     @Autowired
@@ -43,19 +38,10 @@ public class OneTaskTransationTest{
     @Autowired
     RuntimeService runtimeService;
 
-
     @Autowired
-    DataSourceProperties dataSourceProperties;
+    TaskService taskService;
 
-    @Test
-    public void testDataSource() throws Exception {
-        // 获取配置的数据源
-        DataSource dataSource = applicationContext.getBean(DataSource.class);
-        // 查看配置数据源信息
-        System.out.println(dataSource);
-        System.out.println(dataSource.getClass().getName());
-        System.out.println(dataSourceProperties);
-    }
+
 
 
 
@@ -73,23 +59,41 @@ public class OneTaskTransationTest{
 
 
     @Test
-    @Transactional
-    public void testTransaction(){
-//        testDeployProcessEngine();
-        Person person = personRepository.findByUsername("sam2");
+    public void testConcurrentProcess(){
 
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("person", person);
-        runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+        for (int i=0;i<200000;i++){
+            Person person = new Person("userNameTest"+i,"firstName"+i,"lastName"+i,new Date());
+            personRepository.save(person);
+            Map<String, Object> variables = new HashMap<String, Object>();
+            variables.put("person", person);
+            runtimeService.startProcessInstanceByKey("oneTaskProcess",""+person.getId(), variables);
 
-        System.out.println("Number of process instances: " + runtimeService.createProcessInstanceQuery().count());
+            System.out.println("Number of process instances: " + runtimeService.createProcessInstanceQuery().count());
+        }
+
+
     }
 
+
+    @Test
+    public void testComplete(){
+
+      List<ProcessInstance> processInstanceList = runtimeService.createProcessInstanceQuery().active().list();
+        for (ProcessInstance processInstance:processInstanceList){
+          List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
+          for (Task task:tasks){
+              taskService.complete(task.getId());
+          }
+        }
+
+    }
 
 
     @Test
     @Transactional
     public void testSavePerson(){
-        personRepository.save(new Person("test","last","first",new Date()));
+        Person person = new Person("test", "last", "first", new Date());
+        personRepository.save(person);
+        Assert.notNull(person.getId(),"is not null");
     }
 }

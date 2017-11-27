@@ -7,7 +7,7 @@
     <process id="oneTaskProcess" name="The One Task Process">
         <startEvent id="theStart" />
         <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-        <userTask id="theTask" name="my task" activiti:assignee="${person.id}" />
+        <userTask id="theTask" name="my task" activiti:assignee="${person.id}" activiti:async="true" />
         <sequenceFlow id="flow2" sourceRef="theTask" targetRef="printTask" />
         <serviceTask id="printTask" name="print" activiti:expression="${oneTaskService.printNewTask()}"/>
         <sequenceFlow id="flow3" sourceRef="printTask" targetRef="theEnd" />

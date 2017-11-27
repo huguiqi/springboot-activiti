@@ -8,8 +8,14 @@
     </serviceTask>
     <userTask id="sid-9CC4EF2E-30CD-4BA2-BA2D-31F0EC89415E" name="人工审核" activiti:assignee="admin">
       <documentation>
-        用户${userName}} 芝麻信用分为：${creditPoints}.信用很一般，需要人工审核判断。
+        用户${userName} 芝麻信用分为：${creditPoints}.信用很一般，需要人工审核判断。
       </documentation>
+      <potentialOwner>
+        <documentation>任务所属人为admin</documentation>
+        <resourceAssignmentExpression>
+          <expression>admin</expression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
     </userTask>
     <serviceTask id="sid-4FBC630D-3D5E-4E94-BEF0-3CCD163B3B62" name="不通过审核" activiti:expression="${zhiMaiService.auditNoPass()}"></serviceTask>
     <sequenceFlow id="SQ_FLOW_sendAudit" name="提交审核" sourceRef="startEvent" targetRef="sid-519FDDD0-2844-4061-88A3-8352BBD7D37A">
