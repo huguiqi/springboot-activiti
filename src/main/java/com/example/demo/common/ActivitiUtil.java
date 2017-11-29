@@ -1,8 +1,6 @@
 package com.example.demo.common;
 
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,10 @@ public class ActivitiUtil {
 
     @Autowired
     private RuntimeService runtimeService;
+    @Autowired
+    private RepositoryService repositoryService;
+    @Autowired
+    private ManagementService managementService;
 
 
 
@@ -73,4 +75,8 @@ public class ActivitiUtil {
         return runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(key).singleResult();
     }
 
+
+    public void test(){
+
+    }
 }

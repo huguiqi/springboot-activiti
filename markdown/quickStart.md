@@ -157,11 +157,137 @@ activiti遵循springboot的配置。
 
 
 
+### ProcessEngine 
+
+可以通过如下获取：
+
+    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+
+如果集成了spring则可以直接通过自动注入：
+
+    @Autowired
+    private ProcessEngine processEngine;
+
+获取工作流引擎对象。
+引擎对象可以获取八大服务接口：
+
+    RuntimeService runtimeService = processEngine.getRuntimeService();
+    RepositoryService repositoryService = processEngine.getRepositoryService();
+    TaskService taskService = processEngine.getTaskService();
+    ManagementService managementService = processEngine.getManagementService();
+    IdentityService identityService = processEngine.getIdentityService();
+    HistoryService historyService = processEngine.getHistoryService();
+    FormService formService = processEngine.getFormService();
+    DynamicBpmnService dynamicBpmnService = processEngine.getDynamicBpmnService();
+
+
+
+`ProcessEngines.getDefaultProcessEngine()`
+
+在第一次被调用时将初始化并构建流程引擎，在之后的调用都会返回相同的流程引擎。流程引擎的创建通过ProcessEngines.init()实现，关闭由ProcessEngines.destroy()实现。
+
+ProcessEngines会扫描所有activiti.cfg.xml与activiti-context.xml文件。对于所有的activiti.cfg.xml文件，流程引擎会以标准Activiti方式构建：ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(inputStream).buildProcessEngine()。对于所有的activiti-context.xml文件，流程引擎会以Spring的方式构建：首先构建Spring应用上下文，然后从该上下文中获取流程引擎。
 
 ### RuntimeService
 
 
-### TaskService
+### repositoryService
+
+* 提供了管理与控制deployments（部署）与process definitions（流程定义）的操作
+* RepositoryService提供的是静态信息（也就是不会改变，至少不会经常改变的信息）
+* 查询引擎已知的部署与流程定义。
+* 暂停或激活部署中的某些流程，或整个部署。暂停意味着不能再对它进行操作，激活是其反操作。
+* 读取各种资源，比如部署中保存的文件，或者引擎自动生成的流程图。
+* 读取POJO版本的流程定义。使用它可以用Java而不是xml的方式检查流程。
 
 
-###
+eg:
+
+    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+            RepositoryService repositoryService = processEngine.getRepositoryService();
+            repositoryService.createDeployment()
+                    .addClasspathResource("processes/one-task-process.bpmn20.xml")
+                    .deploy();
+
+### taskService
+
+对于BPM引擎来说，核心是需要人类用户实际操作的任务。所有任务相关的东西都组织在TaskService中；
+
+* 查询分派给用户或组的任务
+* 创建standalone（独立运行）任务。这是一种没有关联到流程实例的任务。
+
+创建流程引擎时，会在classpath下搜索activiti.cfg.xml配置文件，并基于此文件进行构建。
+如果没找到，则会基于默认的配置创建引擎。
+如果已经创建了默认引擎，但是又不想用这个引擎，想换个，那就可以通过这种方式。
+
+
+决定任务的执行用户（assignee），或者将用户通过某种方式与任务关联。
+认领（claim）与完成（complete）任务。认领是指某人决定成为任务的执行用户，也即他将会完成这个任务。完成任务是指“做这个任务要求的工作”，通常是填写某种表单。
+
+### managementService
+
+ManagementService通常在用Activiti编写用户应用时不需要使用。它可以用于读取数据库表与表原始数据的信息，也提供了对作业（job）的查询与管理操作。Activiti中很多地方都使用作业，例如定时器（timer），异步操作（asynchronous continuation），延时暂停/激活（delayed suspension/activation）等等。
+
+一般在应用于一些复杂的场景
+
+### identityService
+
+
+    Group group = identityService.newGroup("user");
+    group.setName("users");
+    group.setType("security-role");
+    identityService.saveGroup(group);
+
+    User admin = identityService.newUser("admin");
+    admin.setPassword("admin");
+    identityService.saveUser(admin);
+    
+它用于管理（创建，更新，删除，查询……）组与用户。对应的数据库表是`ACT_ID_*`所有数据库;
+
+activiti执行时不会对用户执行检查。任务可以分配给任何人，无论这个用户是否存在。
+
+可以与spring-rest配合对接口进行鉴权。
+
+### formService
+
+Form Service 表单服务。可选的。提供启动表单和任务表单两个概念。即在流程实例启动前展示给用户的，和完成任务时展示给用户的两种表单。注意，这是个可选服务，表单不一定需要嵌入到流程定义中。
+
+请假流程例子，eg:
+
+    <startEvent>
+      <extensionElements>
+        <activiti:formProperty id="numberOfDays" name="天数" value="${numberOfDays}" type="long" required="true"/>
+        <activiti:formProperty id="startDate" name="开始时间" value="${startDate}" datePattern="dd-MM-yyyy hh:mm" type="date" required="true" />
+        <activiti:formProperty id="vacationMotivation" name="理由" value="${vacationMotivation}" type="string" />
+      </extensionElements>
+    </userTask>
+
+
+
+部署完了后，用activiti-app打开的效果是这样的：
+
+![请假form](forms.explorer.png)
+
+
+**支持下列表单参数类型：**
+
+* string (org.activiti.engine.impl.form.StringFormType
+* long (org.activiti.engine.impl.form.LongFormType)
+* enum (org.activiti.engine.impl.form.EnumFormType)
+* date (org.activiti.engine.impl.form.DateFormType)
+* boolean (org.activiti.engine.impl.form.BooleanFormType)
+
+### dynamicBpmnService
+
+
+
+### HistoryService
+
+
+`HistoryService`暴露所有Activiti引擎收集的历史数据。当执行流程时，引擎会保存许多数据（可以配置），例如流程实例启动时间，谁在执行哪个任务，完成任务花费的事件，每个流程实例的执行路径，等等。
+
+
+
+
+
+https://doc.yonyoucloud.com/doc/activiti-5.x-user-guide/Chapter%208.%20BPMN%202.0%20Constructs%20%E5%85%B3%E4%BA%8E%20BPMN%202.0%20%E6%9E%B6%E6%9E%84/Transactions%20and%20Concurrency%20%E4%BA%8B%E5%8A%A1%E4%B8%8E%E5%B9%B6%E5%8F%91.html
