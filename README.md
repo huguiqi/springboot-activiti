@@ -17,6 +17,7 @@ http://blog.csdn.net/xnf1991/article/details/52610277
 根据官方教程，先写一个demo
 
 [官方教程quick start](https://www.activiti.org/quick-start)
+[官方用户手册](https://www.activiti.org/userguide/)
 
 什么？文档写的太烂，很多英文写的不详细？那就看看5.x的中文手册
 

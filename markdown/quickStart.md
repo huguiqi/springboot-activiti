@@ -190,7 +190,16 @@ ProcessEngines会扫描所有activiti.cfg.xml与activiti-context.xml文件。对
 
 ### RuntimeService
 
+* 启动流程定义的新流程实例
+* 查询各种流程实例状态
 
+常用接口：
+    
+    ProcessInstance startProcessInstanceByKey(String var1, String var2);
+    ProcessInstance startProcessInstanceByKey(String var1, Map<String, Object> var2);
+    ProcessInstance startProcessInstanceByKeyAndTenantId(String var1, String var2);
+    ProcessInstance startProcessInstanceByKeyAndTenantId(String var1, Map<String, Object> var2, String var3);
+    
 ### repositoryService
 
 * 提供了管理与控制deployments（部署）与process definitions（流程定义）的操作
@@ -198,7 +207,7 @@ ProcessEngines会扫描所有activiti.cfg.xml与activiti-context.xml文件。对
 * 查询引擎已知的部署与流程定义。
 * 暂停或激活部署中的某些流程，或整个部署。暂停意味着不能再对它进行操作，激活是其反操作。
 * 读取各种资源，比如部署中保存的文件，或者引擎自动生成的流程图。
-* 读取POJO版本的流程定义。使用它可以用Java而不是xml的方式检查流程。
+* 读取POJO版本的流程定义。使用它可以用Java而不是xml的方式检查流程。(用处不大)
 
 
 eg:
@@ -223,6 +232,8 @@ eg:
 
 决定任务的执行用户（assignee），或者将用户通过某种方式与任务关联。
 认领（claim）与完成（complete）任务。认领是指某人决定成为任务的执行用户，也即他将会完成这个任务。完成任务是指“做这个任务要求的工作”，通常是填写某种表单。
+
+
 
 ### managementService
 
@@ -279,7 +290,25 @@ Form Service 表单服务。可选的。提供启动表单和任务表单两个�
 
 ### dynamicBpmnService
 
+DynamicBpmnService可以用于更改流程定义的一部分，而不需要重新部署它。例如，您可以在流程定义中更改一个用户任务的按收人定义，或者更改服务任务的名称。
 
+常用接口：
+
+    void saveProcessDefinitionInfo(String var1, ObjectNode var2);
+
+    ObjectNode changeServiceTaskClassName(String var1, String var2);
+
+    void changeServiceTaskClassName(String var1, String var2, ObjectNode var3);
+
+    ObjectNode changeServiceTaskExpression(String var1, String var2);
+
+    void changeServiceTaskExpression(String var1, String var2, ObjectNode var3);
+
+    ObjectNode changeUserTaskName(String var1, String var2);
+    
+    void changeUserTaskName(String var1, String var2, ObjectNode var3);
+    
+    ObjectNode changeUserTaskDescription(String var1, String var2);
 
 ### HistoryService
 
@@ -289,5 +318,49 @@ Form Service 表单服务。可选的。提供启动表单和任务表单两个�
 
 
 
+## 事务与并发处理
+
+如果触发了 Activiti 的操作（比如，开始流程，完成任务，触发流程继续执行）， Activiti 会推进流程，直到每个分支都进入等待状态。更抽象的说，它会流程图执行深度优先搜索， 如果每个分支都遇到等待状态，就会返回。等待状态是"稍后"需要执行任务， 就是说 Activiti 会把当前状态保存到数据库中，然后等待下一次触发。 触发可能来自外部，比如用户任务或接收到一个消息，也可能来自 Activiti 本身，比如我们设置了定时器事件。
+
+**事务**
+
+* 如果在complete下一个任务时出错,则流程回滚到上一个任务，当前任务为等待状态
+* activiti事务可与业务系统事务进行统一(数据源相同的情况下是统一的，不可数据源则需要特殊配置)
+
+
+**并发处理**
+activiti的任务执行可以后台线程异步job执行的(job执行器周期的对数据库job进行扫描)，如果没有设置job的过期时间，默认是5分钟。
+针对大数据量的并发时，采用job执行器的方式可以保证所有的流程实例的job不会并发执行，都是顺序执行。
+
+从 Activiti 5.9开始，JobExecutor 能保证同一个流程实例中的 job 不会并发执行。
+为什么不会有并发问题？
+
 
 https://doc.yonyoucloud.com/doc/activiti-5.x-user-guide/Chapter%208.%20BPMN%202.0%20Constructs%20%E5%85%B3%E4%BA%8E%20BPMN%202.0%20%E6%9E%B6%E6%9E%84/Transactions%20and%20Concurrency%20%E4%BA%8B%E5%8A%A1%E4%B8%8E%E5%B9%B6%E5%8F%91.html
+
+
+
+如下面的流程：
+
+      <process id="JobTaskProcess" name="执行job的流程测试">
+            <startEvent id="theStart" />
+            <sequenceFlow id="flow1" sourceRef="theStart" targetRef="printTask" />
+            <serviceTask id="printTask" name="print" activiti:async="true" activiti:class="com.example.demo.service.delegate.MyJavaDelegate"/>
+            <sequenceFlow id="flow2" sourceRef="printTask" targetRef="theEnd" />
+            <endEvent id="theEnd" />
+        </process>
+        
+        
+  MyJavaDelegate:
+  
+      public class MyJavaDelegate implements JavaDelegate {
+          public void execute(DelegateExecution execution){
+      //        String var = (String) execution.getVariable("input");
+      //        var = var.toUpperCase();
+      //        execution.setVariable("input", var);
+      
+              System.out.println("delegate execute run");
+              System.out.println("打印。。。。。。。");
+      
+          }
+      }
