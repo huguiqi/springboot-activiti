@@ -265,6 +265,7 @@ Form Service 表单服务。可选的。提供启动表单和任务表单两个�
 
 请假流程例子，eg:
 
+    <userTask id="adjustVacationRequestTask" name="Adjust vacation request">
     <startEvent>
       <extensionElements>
         <activiti:formProperty id="numberOfDays" name="天数" value="${numberOfDays}" type="long" required="true"/>
