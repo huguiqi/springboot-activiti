@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <process id="FormTest" name="FormTest" isExecutable="true">
+    <documentation>FormTestsssss</documentation>
+    <startEvent id="startEvent">
+      <extensionElements>
+        <activiti:formProperty id="userName" name="userName" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="password" name="password" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="date" type="date" datePattern="MM-dd-yyyy hh:mm"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <userTask id="FormTestUserTask" name="FormTestUserTask"></userTask>
+    <endEvent id="endEvent"></endEvent>
+    <sequenceFlow id="startSequenceFlow" sourceRef="startEvent" targetRef="FormTestUserTask"></sequenceFlow>
+    <sequenceFlow id="endSequenceFlow" sourceRef="FormTestUserTask" targetRef="endEvent"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_FormTest">
+    <bpmndi:BPMNPlane bpmnElement="FormTest" id="BPMNPlane_FormTest">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="90.00000000000001" y="150.00000000000003"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="FormTestUserTask" id="BPMNShape_FormTestUserTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="345.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+        <omgdc:Bounds height="28.0" width="28.0" x="671.6666666666667" y="153.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="startSequenceFlow" id="BPMNEdge_startSequenceFlow">
+        <omgdi:waypoint x="119.99777100823498" y="164.74141774123734"></omgdi:waypoint>
+        <omgdi:waypoint x="345.0" y="160.86206896551724"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="endSequenceFlow" id="BPMNEdge_endSequenceFlow">
+        <omgdi:waypoint x="445.0" y="161.20412844036696"></omgdi:waypoint>
+        <omgdi:waypoint x="671.6707246924443" y="166.66294176438225"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

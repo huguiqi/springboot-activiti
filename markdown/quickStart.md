@@ -199,6 +199,8 @@ ProcessEngines会扫描所有activiti.cfg.xml与activiti-context.xml文件。对
     ProcessInstance startProcessInstanceByKey(String var1, Map<String, Object> var2);
     ProcessInstance startProcessInstanceByKeyAndTenantId(String var1, String var2);
     ProcessInstance startProcessInstanceByKeyAndTenantId(String var1, Map<String, Object> var2, String var3);
+    void suspendProcessInstanceById(String var1);
+    void activateProcessInstanceById(String var1);
     
 ### repositoryService
 
