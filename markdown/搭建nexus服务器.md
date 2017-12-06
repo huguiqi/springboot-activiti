@@ -94,7 +94,8 @@
     
 然后再public组里面讲这个aliyun-proxy仓库加入，排在maven-central之前即可。
       
-      ![请假form](nexus10.png)
+   
+ ![请假form](nexus10.png)
    
    ## 阿里云public库不完整
    
