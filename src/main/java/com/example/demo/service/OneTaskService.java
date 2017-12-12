@@ -13,6 +13,6 @@ public class OneTaskService {
     public void printNewTask(){
 
         System.out.println("printNewTask");
-        throw new RuntimeException("打印操作出错");
+//        throw new RuntimeException("打印操作出错");
     }
 }

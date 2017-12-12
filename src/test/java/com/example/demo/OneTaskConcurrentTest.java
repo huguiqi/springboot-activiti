@@ -133,6 +133,23 @@ public class OneTaskConcurrentTest {
     }
 
     @Test
+    public void testlaim(){
+        //被认领的task
+        taskService.claim("4076","110110");
+
+    }
+
+    @Test
+    public void testClaimForUnClaim(){
+        //        HashMap<String,Object> map = new HashMap<String,Object>();
+//        map.put("userId","110110");
+//        taskService.setAssignee("4076","110110");
+//        taskService.addCandidateUser("4076","110111");
+//        taskService.complete("4076");
+        taskService.createTaskQuery();
+    }
+
+    @Test
     @Transactional
     public void testSavePerson(){
         Person person = new Person("test", "last", "first", new Date());
